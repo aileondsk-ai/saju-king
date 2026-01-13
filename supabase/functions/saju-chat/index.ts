@@ -7,7 +7,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// ========== DB 프롬프트 조회 함수 ==========
 async function getActivePrompt(functionName: string, promptName: string, fallbackPrompt: string): Promise<string> {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -51,32 +50,27 @@ const EARTHLY_BRANCHES = ["자", "축", "인", "묘", "진", "사", "오", "미"
 const BRANCHES_HANJA = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 const BRANCHES_ELEMENTS = ["수", "토", "목", "목", "토", "화", "화", "토", "금", "금", "토", "수"];
 
-// 지지 시간대 매핑
 const HOUR_BRANCHES = [
-  { start: 23, end: 1, branch: 0 },   // 자시
-  { start: 1, end: 3, branch: 1 },    // 축시
-  { start: 3, end: 5, branch: 2 },    // 인시
-  { start: 5, end: 7, branch: 3 },    // 묘시
-  { start: 7, end: 9, branch: 4 },    // 진시
-  { start: 9, end: 11, branch: 5 },   // 사시
-  { start: 11, end: 13, branch: 6 },  // 오시
-  { start: 13, end: 15, branch: 7 },  // 미시
-  { start: 15, end: 17, branch: 8 },  // 신시
-  { start: 17, end: 19, branch: 9 },  // 유시
-  { start: 19, end: 21, branch: 10 }, // 술시
-  { start: 21, end: 23, branch: 11 }, // 해시
+  { start: 23, end: 1, branch: 0 },  
+  { start: 1, end: 3, branch: 1 },    
+  { start: 3, end: 5, branch: 2 },    
+  { start: 5, end: 7, branch: 3 },   
+  { start: 7, end: 9, branch: 4 },    
+  { start: 9, end: 11, branch: 5 },  
+  { start: 11, end: 13, branch: 6 }, 
+  { start: 13, end: 15, branch: 7 }, 
+  { start: 15, end: 17, branch: 8 },
+  { start: 17, end: 19, branch: 9 }, 
+  { start: 19, end: 21, branch: 10 }, 
+  { start: 21, end: 23, branch: 11 }, 
 ];
 
-// 월건 표 (년간에 따른 월간 시작점)
-const MONTH_STEM_START = [2, 4, 6, 8, 0, 2, 4, 6, 8, 0]; // 갑기->병, 을경->무, 병신->경, 정임->임, 무계->갑
+const MONTH_STEM_START = [2, 4, 6, 8, 0, 2, 4, 6, 8, 0]; 
 
-// 시간 천간 시작점 (일간에 따른 시간 천간)
-const HOUR_STEM_START = [0, 2, 4, 6, 8, 0, 2, 4, 6, 8]; // 갑기->갑, 을경->병, 병신->무, 정임->경, 무계->임
+const HOUR_STEM_START = [0, 2, 4, 6, 8, 0, 2, 4, 6, 8]; 
 
-// 오행 타입 정의
 type ElementType = "목" | "화" | "토" | "금" | "수";
 
-// 오행 상생상극
 const ELEMENT_NAMES: ElementType[] = ["목", "화", "토", "금", "수"];
 const ELEMENT_MEANINGS: Record<ElementType, { organ: string; direction: string; color: string; season: string; trait: string }> = {
   "목": { organ: "간/담", direction: "동쪽", color: "청색/녹색", season: "봄", trait: "성장, 창의력, 인내" },
@@ -86,15 +80,13 @@ const ELEMENT_MEANINGS: Record<ElementType, { organ: string; direction: string; 
   "수": { organ: "신장/방광", direction: "북쪽", color: "흑색/남색", season: "겨울", trait: "지혜, 유연성, 통찰" }
 };
 
-// 십신 관계
 const TEN_GODS = ["비견", "겁재", "식신", "상관", "편재", "정재", "편관", "정관", "편인", "정인"];
 
-// 기준일 (1900년 1월 31일 = 경자년 기축월 갑진일)
 const BASE_DATE = new Date(1900, 0, 31);
-const BASE_YEAR_STEM = 6; // 경
-const BASE_YEAR_BRANCH = 0; // 자
-const BASE_DAY_STEM = 0; // 갑(甲) - 1900-01-01 기준
-const BASE_DAY_BRANCH = 10; // 술(戌) - 1900-01-01 기준
+const BASE_YEAR_STEM = 6;
+const BASE_YEAR_BRANCH = 0; 
+const BASE_DAY_STEM = 0;
+const BASE_DAY_BRANCH = 10;
 
 function getDaysBetween(date1: Date, date2: Date): number {
   const oneDay = 24 * 60 * 60 * 1000;
@@ -119,23 +111,19 @@ function getHourBranch(hour: number): number {
 function calculateSaju(birthDate: Date, birthHour: number | null) {
   const days = getDaysBetween(BASE_DATE, birthDate);
 
-  // 년주 계산 (입춘 기준으로 해야 하지만, 간략화하여 양력 기준)
   const year = birthDate.getFullYear();
   const yearDiff = year - 1900;
   const yearStemIndex = (BASE_YEAR_STEM + yearDiff) % 10;
   const yearBranchIndex = (BASE_YEAR_BRANCH + yearDiff) % 12;
 
-  // 월주 계산 (절기 기준으로 해야 하지만, 간략화)
-  const month = birthDate.getMonth(); // 0-11
-  const monthBranchIndex = (month + 2) % 12; // 인월(1월)부터 시작
+  const month = birthDate.getMonth(); 
+  const monthBranchIndex = (month + 2) % 12; 
   const monthStemStart = MONTH_STEM_START[yearStemIndex];
   const monthStemIndex = (monthStemStart + month) % 10;
 
-  // 일주 계산
   const dayStemIndex = ((BASE_DAY_STEM + days) % 10 + 10) % 10;
   const dayBranchIndex = ((BASE_DAY_BRANCH + days) % 12 + 12) % 12;
 
-  // 시주 계산
   let hourStemIndex = 0;
   let hourBranchIndex = 0;
   if (birthHour !== null) {
@@ -163,13 +151,11 @@ function getPillarElement(stem: number, branch: number): string {
 function countElements(saju: ReturnType<typeof calculateSaju>): Record<string, number> {
   const counts: Record<string, number> = { "목": 0, "화": 0, "토": 0, "금": 0, "수": 0 };
 
-  // 천간 오행 카운트
   counts[STEMS_ELEMENTS[saju.year.stem]]++;
   counts[STEMS_ELEMENTS[saju.month.stem]]++;
   counts[STEMS_ELEMENTS[saju.day.stem]]++;
   if (saju.hour) counts[STEMS_ELEMENTS[saju.hour.stem]]++;
 
-  // 지지 오행 카운트
   counts[BRANCHES_ELEMENTS[saju.year.branch]]++;
   counts[BRANCHES_ELEMENTS[saju.month.branch]]++;
   counts[BRANCHES_ELEMENTS[saju.day.branch]]++;
@@ -181,7 +167,6 @@ function countElements(saju: ReturnType<typeof calculateSaju>): Record<string, n
 function getDayMasterStrength(saju: ReturnType<typeof calculateSaju>, elementCounts: Record<string, number>): { strength: string; description: string } {
   const dayElement = STEMS_ELEMENTS[saju.day.stem] as ElementType;
 
-  // 신강/신약 판단 (간략화)
   const selfCount = elementCounts[dayElement];
   const supportingElement = dayElement === "목" ? "수" : dayElement === "화" ? "목" : dayElement === "토" ? "화" : dayElement === "금" ? "토" : "금";
   const supportCount = elementCounts[supportingElement];
@@ -205,7 +190,6 @@ function getDayMasterStrength(saju: ReturnType<typeof calculateSaju>, elementCou
 function getYongsin(saju: ReturnType<typeof calculateSaju>, elementCounts: Record<string, number>, isStrong: boolean): { yongsin: ElementType; huisin: ElementType; gisin: ElementType } {
   const dayElement = STEMS_ELEMENTS[saju.day.stem] as ElementType;
 
-  // 오행 상생 관계
   const generating: Record<ElementType, ElementType> = { "목": "화", "화": "토", "토": "금", "금": "수", "수": "목" };
   const controlling: Record<ElementType, ElementType> = { "목": "토", "화": "금", "토": "수", "금": "목", "수": "화" };
   const generatedBy: Record<ElementType, ElementType> = { "목": "수", "화": "목", "토": "화", "금": "토", "수": "금" };
@@ -215,12 +199,10 @@ function getYongsin(saju: ReturnType<typeof calculateSaju>, elementCounts: Recor
   let gisin: ElementType;
 
   if (isStrong) {
-    // 신강이면 설기(食傷)나 재(財)가 용신
     yongsin = generating[dayElement];
     huisin = generating[yongsin];
     gisin = dayElement;
   } else {
-    // 신약이면 인성이나 비겁이 용신
     yongsin = generatedBy[dayElement];
     huisin = dayElement;
     gisin = controlling[dayElement];
@@ -234,8 +216,6 @@ function getCurrentDaeun(birthYear: number, gender: string): { period: string; p
   const koreaTime = new Date(Date.now() + 9 * 60 * 60 * 1000);
   const currentYear = koreaTime.getUTCFullYear();
   const age = currentYear - birthYear;
-
-  // 대운 시작 나이 (간략화 - 실제로는 월주와 성별에 따라 순행/역행 결정)
   const daeunStartAge = 4;
   const daeunPeriod = 10;
   const daeunNumber = Math.floor((age - daeunStartAge) / daeunPeriod);
@@ -255,7 +235,6 @@ function getCurrentDaeun(birthYear: number, gender: string): { period: string; p
 }
 
 function getYearlyFortune(birthYear: number): { year: string; pillar: string; theme: string } {
-  // 한국 시간 기준으로 현재 연도 계산
   const koreaTime = new Date(Date.now() + 9 * 60 * 60 * 1000);
   const currentYear = koreaTime.getUTCFullYear();
   const yearDiff = currentYear - 1900;
@@ -297,8 +276,6 @@ function generateSajuContext(name: string, gender: string, birthDate: Date, birt
 
   const dayElementKor = STEMS_ELEMENTS[saju.day.stem] as ElementType;
   const dayElementMeaning = ELEMENT_MEANINGS[dayElementKor];
-
-  // 운세 등급 계산 (간략화)
   const getFortuneGrade = (element: string): number => {
     if (element === yongsin) return 5;
     if (element === huisin) return 4;
@@ -368,7 +345,6 @@ ${saju.hour ? `- 시주(時柱): ${getPillarString(saju.hour.stem, saju.hour.bra
 - 행운의 계절: ${ELEMENT_MEANINGS[yongsin].season}`;
 }
 
-// 챗봇 시스템 프롬프트 (v2.0 대화형 스타일 + 추론 강화)
 const CHATBOT_SYSTEM_PROMPT = `[SYSTEM]
 This is a placeholder prompt.
 Please configure the actual system prompt in the database table 'prompt_versions'.
@@ -393,12 +369,8 @@ serve(async (req) => {
     console.log("Processing chat request with", messages?.length || 0, "messages");
     console.log("User profile:", userProfile);
     console.log("Analysis context mode:", analysisContext?.mode);
-
-    // 분석 컨텍스트가 있으면 사용, 없으면 사주 계산
     let userContext: string;
-
     if (analysisContext) {
-      // 분석 결과에서 넘어온 경우 - 템플릿 적용
       if (analysisContext.mode === "personal") {
         userContext = `[상담 모드: 개인 사주 분석 결과 기반]
 
@@ -445,7 +417,6 @@ ${analysisContext.concerns?.join(", ") || "일반 궁합 상담"}`;
 분석 결과 없이 일반 상담을 진행합니다.`;
       }
     } else if (userProfile && userProfile.birthDate) {
-      // 직접 상담 진입 - 기존 사주 계산 로직 사용
       const birthDate = new Date(userProfile.birthDate);
       let birthHour: number | null = null;
 
@@ -470,12 +441,9 @@ ${analysisContext.concerns?.join(", ") || "일반 궁합 상담"}`;
     }
 
     const currentDate = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-
-    // DB에서 활성 프롬프트 조회 (없으면 기본 프롬프트 사용)
     const baseSystemPrompt = await getActivePrompt("saju-chat", "system_prompt", CHATBOT_SYSTEM_PROMPT);
     const systemPrompt = baseSystemPrompt + "\n\n" + userContext + "\n\n현재 날짜: " + currentDate + "\n\n위 정보를 기반으로 사용자의 질문에 친근하고 공감적으로 답변해주세요.";
 
-    // AI API 호출 함수 - Gemini 최우선, GPT 폴백
     async function callGeminiStreaming() {
       console.log("Calling Gemini API with streaming (primary)...");
       const allMessages = [
@@ -532,7 +500,6 @@ ${analysisContext.concerns?.join(", ") || "일반 궁합 상담"}`;
       return response;
     }
 
-    // Gemini SSE를 OpenAI 호환 형식으로 변환하는 TransformStream
     function createGeminiToOpenAITransform() {
       return new TransformStream({
         transform(chunk, controller) {
@@ -601,8 +568,6 @@ ${analysisContext.concerns?.join(", ") || "일반 궁합 상담"}`;
     }
 
     console.log("Streaming response from AI");
-
-    // Gemini인 경우 변환, GPT인 경우 그대로 전달
     const responseBody = isGemini && streamResponse.body
       ? streamResponse.body.pipeThrough(createGeminiToOpenAITransform())
       : streamResponse.body;
