@@ -1,0 +1,245 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Celestial color palette */
+    --background: 222 47% 6%;
+    --foreground: 45 30% 96%;
+
+    --card: 222 47% 9%;
+    --card-foreground: 45 30% 96%;
+
+    --popover: 222 47% 9%;
+    --popover-foreground: 45 30% 96%;
+
+    --primary: 45 80% 65%;
+    --primary-foreground: 222 47% 6%;
+
+    --secondary: 260 30% 20%;
+    --secondary-foreground: 45 30% 96%;
+
+    --muted: 222 30% 15%;
+    --muted-foreground: 220 15% 60%;
+
+    --accent: 280 40% 35%;
+    --accent-foreground: 45 30% 96%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 45 30% 96%;
+
+    --border: 222 30% 18%;
+    --input: 222 30% 18%;
+    --ring: 45 80% 65%;
+
+    --radius: 1rem;
+
+    /* Custom design tokens */
+    --gold: 45 80% 65%;
+    --gold-light: 45 70% 80%;
+    --gold-dark: 40 70% 45%;
+    --navy-deep: 222 47% 6%;
+    --navy: 222 47% 11%;
+    --navy-light: 222 30% 18%;
+    --lavender: 280 40% 35%;
+    --lavender-light: 280 50% 70%;
+    --cream: 45 30% 96%;
+    --star-white: 60 30% 96%;
+
+    /* Gradients */
+    --gradient-cosmic: linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(280 30% 15%) 50%, hsl(222 47% 9%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(45 80% 65%) 0%, hsl(35 80% 55%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(222 47% 12%) 0%, hsl(222 47% 8%) 100%);
+    --gradient-celestial: radial-gradient(ellipse at top, hsl(280 30% 20%) 0%, hsl(222 47% 6%) 70%);
+
+    /* Shadows */
+    --shadow-glow: 0 0 40px hsl(45 80% 65% / 0.15);
+    --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.3);
+    --shadow-soft: 0 4px 16px hsl(0 0% 0% / 0.2);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    --sidebar-background: 222 47% 8%;
+    --sidebar-foreground: 45 30% 96%;
+    --sidebar-primary: 45 80% 65%;
+    --sidebar-primary-foreground: 222 47% 6%;
+    --sidebar-accent: 280 40% 35%;
+    --sidebar-accent-foreground: 45 30% 96%;
+    --sidebar-border: 222 30% 18%;
+    --sidebar-ring: 45 80% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noto Serif KR', Georgia, serif;
+  }
+}
+
+@layer components {
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(var(--gold)) 0%, hsl(var(--gold-light)) 50%, hsl(var(--gold)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-cosmic {
+    background: var(--gradient-cosmic);
+  }
+
+  .bg-celestial {
+    background: var(--gradient-celestial);
+  }
+
+  .card-mystical {
+    background: var(--gradient-card);
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-card);
+  }
+
+  .glow-gold {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .star-particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: hsl(var(--star-white));
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+
+  .nav-item {
+    @apply flex flex-col items-center gap-1 px-4 py-2 text-muted-foreground transition-all duration-300;
+  }
+
+  .nav-item.active {
+    @apply text-primary;
+  }
+
+  .nav-item:hover {
+    @apply text-primary/80;
+  }
+
+  .fortune-card {
+    @apply relative overflow-hidden rounded-2xl p-5 transition-all duration-300;
+    background: var(--gradient-card);
+    border: 1px solid hsl(var(--border));
+  }
+
+  .fortune-card:hover {
+    @apply scale-[1.02];
+    box-shadow: var(--shadow-glow);
+    border-color: hsl(var(--primary) / 0.3);
+  }
+
+  .lucky-badge {
+    @apply inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium;
+    background: hsl(var(--secondary));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .icon-circle {
+    @apply flex items-center justify-center rounded-full;
+    background: linear-gradient(135deg, hsl(var(--lavender)) 0%, hsl(var(--navy)) 100%);
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Keyframes */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(45 80% 65% / 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(45 80% 65% / 0.4);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 3s ease-in-out infinite;
+  background-size: 200% auto;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animation-delay-100 { animation-delay: 0.1s; }
+.animation-delay-200 { animation-delay: 0.2s; }
+.animation-delay-300 { animation-delay: 0.3s; }
+.animation-delay-400 { animation-delay: 0.4s; }
+.animation-delay-500 { animation-delay: 0.5s; }

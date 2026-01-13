@@ -1,0 +1,40 @@
+project_id = "your-project-id"
+
+[functions.saju-chat]
+verify_jwt = false
+
+[functions.compatibility-analysis]
+verify_jwt = false
+
+[functions.saju-analysis]
+verify_jwt = false
+
+[functions.daily-fortune]
+verify_jwt = false
+
+[functions.worry-summarize]
+verify_jwt = false
+
+[functions.premium-saju-analysis]
+verify_jwt = false
+
+[functions.send-premium-result-email]
+verify_jwt = false
+
+[functions.portone-verify-payment]
+verify_jwt = false
+
+[functions.portone-webhook]
+verify_jwt = false
+
+[functions.portone-config]
+verify_jwt = false
+
+[functions.face-palm-analysis]
+verify_jwt = false
+
+[functions.chat-summarize]
+verify_jwt = false
+
+[functions.saju-type-analysis]
+verify_jwt = false
