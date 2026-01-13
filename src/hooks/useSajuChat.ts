@@ -1,5 +1,14 @@
 import { useState, useCallback } from "react";
-import { SAJU_PROMPTS } from "@/lib/saju-prompts";
+// import { SAJU_PROMPTS } from "@/lib/saju-prompts";
+
+const DEFAULT_GREETING = "안녕하세요! 😊 사주 분석 결과를 바탕으로 상담해드릴 운세도우미예요.\n분석 결과에 대해 궁금한 점이 있으시거나, 특정 영역(재물, 직업, 연애 등)에 대해 더 자세히 알고 싶으신 부분이 있으시면 편하게 질문해주세요~";
+
+const DEFAULT_TOPICS = [
+  "올해 재물운이 궁금해요",
+  "직장을 옮겨도 될까요?",
+  "연애운은 어떤가요?",
+  "건강 관리 조언 부탁해요",
+];
 
 export interface Message {
   id: string;
@@ -52,9 +61,9 @@ export function useSajuChat(userProfile?: UserProfile, analysisContext?: Analysi
     {
       id: "initial",
       type: "bot",
-      content: analysisContext 
+      content: analysisContext
         ? `${userProfile?.name || ""}님, 분석 결과를 바탕으로 상담을 시작할게요. 😊\n\n궁금하신 점이나 더 알고 싶은 부분이 있으시면 편하게 말씀해주세요.`
-        : SAJU_PROMPTS.chatbot.initialGreeting,
+        : DEFAULT_GREETING,
       timestamp: new Date(),
     },
   ]);
@@ -156,10 +165,10 @@ export function useSajuChat(userProfile?: UserProfile, analysisContext?: Analysi
             const content = parsed.choices?.[0]?.delta?.content;
             if (content) {
               assistantContent += content;
-              
+
               // 추천 질문 파싱
               const { cleanContent, suggestedQuestions } = parseResponse(assistantContent);
-              
+
               setMessages((prev) =>
                 prev.map((m) =>
                   m.id === assistantMessageId
@@ -179,7 +188,7 @@ export function useSajuChat(userProfile?: UserProfile, analysisContext?: Analysi
       console.error("Chat error:", err);
       const errorMessage = err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.";
       setError(errorMessage);
-      
+
       // 에러 메시지를 봇 응답으로 추가
       setMessages((prev) => [
         ...prev,
@@ -199,32 +208,32 @@ export function useSajuChat(userProfile?: UserProfile, analysisContext?: Analysi
   function parseResponse(content: string): { cleanContent: string; suggestedQuestions?: string[] } {
     const startMarker = "---SUGGESTED_QUESTIONS---";
     const endMarker = "---END_SUGGESTED_QUESTIONS---";
-    
+
     const startIdx = content.indexOf(startMarker);
     if (startIdx === -1) {
       return { cleanContent: content };
     }
-    
+
     const endIdx = content.indexOf(endMarker);
     const cleanContent = content.substring(0, startIdx).trim();
-    
+
     if (endIdx === -1) {
       // 아직 끝 마커가 안 왔음 - 파싱 시도
       const questionsSection = content.substring(startIdx + startMarker.length);
       const questions = parseQuestions(questionsSection);
       return { cleanContent, suggestedQuestions: questions.length > 0 ? questions : undefined };
     }
-    
+
     const questionsSection = content.substring(startIdx + startMarker.length, endIdx);
     const questions = parseQuestions(questionsSection);
-    
+
     return { cleanContent, suggestedQuestions: questions.length > 0 ? questions : undefined };
   }
 
   function parseQuestions(section: string): string[] {
     const lines = section.split("\n").filter(line => line.trim());
     const questions: string[] = [];
-    
+
     for (const line of lines) {
       // "1. 질문내용" 또는 "- 질문내용" 형식 파싱
       const match = line.match(/^[\d\-\.\)]+\s*(.+)/);
@@ -235,7 +244,7 @@ export function useSajuChat(userProfile?: UserProfile, analysisContext?: Analysi
         }
       }
     }
-    
+
     return questions.slice(0, 3);
   }
 
@@ -244,7 +253,7 @@ export function useSajuChat(userProfile?: UserProfile, analysisContext?: Analysi
       {
         id: "initial",
         type: "bot",
-        content: SAJU_PROMPTS.chatbot.initialGreeting,
+        content: DEFAULT_GREETING,
         timestamp: new Date(),
       },
     ]);
@@ -257,6 +266,6 @@ export function useSajuChat(userProfile?: UserProfile, analysisContext?: Analysi
     error,
     sendMessage,
     clearMessages,
-    suggestedTopics: SAJU_PROMPTS.chatbot.suggestedTopics,
+    suggestedTopics: DEFAULT_TOPICS,
   };
 }

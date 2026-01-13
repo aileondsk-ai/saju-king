@@ -65,13 +65,13 @@ async function loadAllPromptModules(): Promise<PromptModules> {
     areaFortune,
     synthesisAdvice
   ] = await Promise.all([
-    getActivePrompt(functionName, "system_prompt", ""),
-    getActivePrompt(functionName, "base_persona", ""),
-    getActivePrompt(functionName, "daymaster_analysis", ""),
-    getActivePrompt(functionName, "tenstar_structure", ""),
-    getActivePrompt(functionName, "luck_cycle_analysis", ""),
-    getActivePrompt(functionName, "area_fortune", ""),
-    getActivePrompt(functionName, "synthesis_advice", "")
+    getActivePrompt(functionName, "system_prompt", FALLBACK_SYSTEM_PROMPT),
+    getActivePrompt(functionName, "base_persona", FALLBACK_COMPONENT_PROMPT),
+    getActivePrompt(functionName, "daymaster_analysis", FALLBACK_COMPONENT_PROMPT),
+    getActivePrompt(functionName, "tenstar_structure", FALLBACK_COMPONENT_PROMPT),
+    getActivePrompt(functionName, "luck_cycle_analysis", FALLBACK_COMPONENT_PROMPT),
+    getActivePrompt(functionName, "area_fortune", FALLBACK_COMPONENT_PROMPT),
+    getActivePrompt(functionName, "synthesis_advice", FALLBACK_COMPONENT_PROMPT)
   ]);
 
   console.log("All prompt modules loaded in parallel");
@@ -1323,6 +1323,10 @@ This is a placeholder prompt.
 Please configure the actual system prompt in the database table 'prompt_versions'.
 Function: saju-analysis
 Prompt Name: system_prompt`;
+
+const FALLBACK_COMPONENT_PROMPT = `[PLACEHOLDER]
+This is a placeholder prompt component.
+Please configure the actual prompt in the database table 'prompt_versions'.`;
 
 // ========== 분석 컨텍스트 및 데이터 생성 (확장) ==========
 interface AnalysisData {
